@@ -49,3 +49,20 @@ O estudo investiga a eficácia de características texturais profundas extraída
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+RESUMO DO **ARTIGO 4**
+
+O artigo descreve detalhadamente a criação de uma base de dados pública de tomografias computadorizadas (CT) de nódulos pulmonares, desenvolvida para apoiar a investigação em diagnóstico assistido por computador (CAD) e análise quantitativa. Esta iniciativa foi um esforço colaborativo entre instituições académicas e empresas de imagem médica, com o apoio do National Cancer Institute (NCI), da FDA, e de outras entidades.
+
+**Objetivo da Base de Dados**: A LIDC/IDRI foi criada para fornecer uma base de referência para a investigação em CAD, ajudando a detetar, classificar e avaliar nódulos pulmonares em imagens de CT. O foco principal foi a identificação de nódulos pulmonares, que são críticos para o diagnóstico de cancro do pulmão.
+
+**Colaboração e Participação**: O projeto envolveu sete centros académicos e oito empresas de imagem médica que colaboraram para resolver desafios organizacionais, técnicos e clínicos. O objetivo era criar uma base de dados robusta que incluísse 1018 casos de exames de CT torácicos, acompanhado por ficheiros XML contendo as anotações de radiologistas sobre os nódulos.
+
+**Processo de Anotação de Imagens**: As imagens foram analisadas por quatro radiologistas, que marcaram as lesões em três categorias: "nódulo ≥ 3 mm", "nódulo < 3 mm", e "não-nódulo ≥ 3 mm". O processo foi feito em duas fases: uma leitura cega, em que os radiologistas marcavam independentemente os nódulos, seguida de uma fase em que podiam rever as suas marcações e as dos seus colegas de forma anónima.
+
+**Conteúdo da Base de Dados**: A base de dados contém 7371 lesões marcadas como nódulos por pelo menos um radiologista, sendo que 2669 foram marcadas como nódulos com mais de 3 mm. Destas, 928 foram marcadas como nódulos ≥ 3 mm por todos os quatro radiologistas.
+
+**Importância da Variabilidade Interobservador**: Uma característica fundamental da base de dados é capturar a variabilidade entre os radiologistas, sem forçar consenso. As diferenças nas marcações fornecem uma visão realista das interpretações subjetivas, o que pode ser útil no desenvolvimento de sistemas CAD que levem em conta essa variabilidade.
+
+**Utilidade e Impacto**: A base de dados LIDC/IDRI foi projetada para ser um recurso essencial na investigação em CAD, facilitando a comparação entre diferentes sistemas e métodos. A disponibilidade pública desta base de dados visa impulsionar a pesquisa e ajudar na disseminação de tecnologias CAD para a prática clínica.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
