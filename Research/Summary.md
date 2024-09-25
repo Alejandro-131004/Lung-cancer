@@ -32,6 +32,20 @@ Radiomics é a análise quantitativa de características extraídas de imagens m
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+RESUMO DO **ARTIGO 3**
 
+O estudo investiga a eficácia de características texturais profundas extraídas de imagens de textura em comparação com as características de intensidade tradicionais para melhorar a predição de malignidade.
 
+**Objetivo do Estudo**: Avaliar se as características texturais profundas (extraídas com GLCM - Gray-Level Co-occurrence Matrix) têm um impacto positivo na previção de malignidade de nódulos pulmonares, comparando-as com características de intensidade extraídas diretamente das imagens de tomografia computorizada (CT).
+
+**Estratégia de Fusão de Características**: Foram exploradas três estratégias para a fusão de características extraídas de várias imagens de textura: concatenação, média e utilização sem fusão. As características foram extraídas através da rede VGG16 pré-treinada, e as previsões de malignidade foram feitas com um classificador SVM.As imagens de textura foram processadas usando características GLCM para descrever padrões de textura a partir da região de interesse (ROI) do nódulo.
+
+**Divisão de Dados e Validação**: O estudo utilizou diferentes níveis de generalização para avaliar o desempenho dos modelos. Foram adotadas técnicas como k-fold cross-validation, divisão por nódulo e divisão por fatias de imagens. A técnica de "leave-one-nodule-out" também foi aplicada para avaliar a capacidade de generalização do modelo em novos dados.
+
+**Resultados**:
+- As características de intensidade apresentaram o pior desempenho. As características texturais extraídas com GLCM superaram as características de intensidade, especialmente quando combinadas pela estratégia de concatenação.
+- A fusão de características via concatenação resultou em uma sensibilidade de 1.0 e especificidade de 0.99 no diagnóstico de nódulos malignos, quando divididos por fatias. No entanto, o desempenho foi mais realista, mas menos otimista, ao dividir os dados por nódulos inteiros.
+- A variabilidade nos resultados destaca os desafios em obter previsões consistentes e confiáveis devido ao tamanho limitado do conjunto de dados e à necessidade de mais amostras benignas para melhorar a precisão.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
