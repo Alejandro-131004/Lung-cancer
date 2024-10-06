@@ -95,7 +95,7 @@ nodule_counts_df = pd.read_excel(nodule_counts_path)
 nodule_counts = pd.Series(nodule_counts_df["Number of Nodules >=3mm**"].values, index=nodule_counts_df["TCIA Patent ID"]).to_dict()
 
 # Filter to only process patients 1-12
-metadata_df = metadata_df[metadata_df['Subject ID'].between("LIDC-IDRI-0001", "LIDC-IDRI-0012")]
+#metadata_df = metadata_df[metadata_df['Subject ID'].between("LIDC-IDRI-0001", "LIDC-IDRI-0012")]
 
 # Create a mapping from Study UID to Subject ID
 uid_to_subject_id = pd.Series(metadata_df["Subject ID"].values, index=metadata_df["Study UID"]).to_dict()
