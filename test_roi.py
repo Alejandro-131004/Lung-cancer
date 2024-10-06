@@ -87,6 +87,13 @@ def create_consensus_mask(ct_volume, annotation_files):
 metadata_path = r"C:\Users\joaop\OneDrive\Ambiente de Trabalho\Lung-cancer\LIDC-IDRI_MetaData.csv"
 metadata_df = pd.read_csv(metadata_path)
 
+# Load the nodule counts from the Excel file
+nodule_counts_path = r"C:\Users\joaop\OneDrive\Ambiente de Trabalho\Lung-cancer\lidc-idri-nodule-counts-6-23-2015.xlsx"
+nodule_counts_df = pd.read_excel(nodule_counts_path)
+
+# Create a mapping from Patient ID to the number of nodules >=3mm
+nodule_counts = pd.Series(nodule_counts_df["Number of Nodules >=3mm**"].values, index=nodule_counts_df["TCIA Patent ID"]).to_dict()
+
 # Filter to only process patients 1-12
 metadata_df = metadata_df[metadata_df['Subject ID'].between("LIDC-IDRI-0001", "LIDC-IDRI-0012")]
 
@@ -150,7 +157,6 @@ for xml_file in xml_files:
             
             nodule_masks[unique_key]['annotations'].append(xml_file)
 
-
 # Check how many unique nodules are found
 print(f"Total unique nodules found: {len(nodule_masks)}")
 
@@ -167,13 +173,32 @@ for unique_key, nodule_data in nodule_masks.items():
     ct_volume = load_nifti_volume(volume_path)  # Reload volume for each patient
     consensus_mask = create_consensus_mask(ct_volume, annotations)  # Use all annotations
 
-    # Save the consensus mask as a NIfTI file
-    standardized_nodule_name = unique_key.replace(" ", "_") + "_mask.nii"  # Unique name for each nodule
+    # Simplified naming convention: Patient ID and Nodule ID
+    nodule_id = unique_key.split('_')[2]  # Extracting the nodule ID from the unique key
+    standardized_nodule_name = f"{subject_id}_Nodule_{nodule_id}_mask.nii"  # Simplified name
+
     output_path = os.path.join(output_directory, standardized_nodule_name)  # Use the specified output directory
 
     # Validate the consensus mask before saving
     if consensus_mask:
         sitk.WriteImage(consensus_mask, output_path)
-        print(f"Saved consensus mask for {unique_key} at {output_path}")
+        print(f"Saved consensus mask for {subject_id} Nodule {nodule_id} at {output_path}")
     else:
         print(f"Consensus mask is empty for {unique_key}, not saving.")
+
+
+    
+
+# Verify that the number of masks matches the expected nodule count
+for patient_id, count in nodule_counts.items():
+    # Count the number of masks for the current patient
+    patient_masks = [key for key in nodule_masks.keys() if key.startswith(patient_id)]
+    actual_mask_count = len(patient_masks)
+    
+    # Check if the actual count matches the expected count
+    if actual_mask_count != count:
+        print(f"Warning: Patient {patient_id} has {actual_mask_count} masks but expected {count} based on nodule counts.")
+    
+
+# Final message indicating the completion of processing
+print("Mask creation process completed.")
