@@ -4,6 +4,7 @@ import pandas as pd
 from radiomics import featureextractor
 import numpy as np
 import statistics
+from concurrent.futures import ThreadPoolExecutor
 from pylidc.utils import consensus
 
 # Initialize the feature extractor
@@ -12,10 +13,8 @@ extractor = featureextractor.RadiomicsFeatureExtractor()
 # Query the LIDC-IDRI dataset for scans with annotations
 scans_with_annotations = pl.query(pl.Scan).filter(pl.Scan.annotations.any()).all()[:8]
 
-# Lists to store the extracted features and patient IDs
+# Lists to store the extracted features
 features_list = []
-
-# Variable to create unique IDs for the nodules
 nodule_id_counter = 1
 
 # Function to calculate the mode or mean, depending on the case
@@ -28,8 +27,11 @@ def calculate_value(value):
 def calculate_mean(value):
     return np.mean(value)
 
-# Iterating through all scans with annotations
-for scan in scans_with_annotations:
+# Function to process a single scan and extract features
+def process_scan(scan):
+    global nodule_id_counter  # Keep track of nodule IDs across threads
+    feature_data = []
+
     # Get the patient ID
     patient_id = scan.patient_id
 
@@ -63,7 +65,6 @@ for scan in scans_with_annotations:
             nodule_image = np.zeros_like(cmask, dtype=scan_array.dtype)
 
             # Fill the nodule_image based on the mask and corresponding region in scan_array
-            # First, ensure the mask and scan_array can be correctly indexed
             if cmask.shape[0] <= scan_array.shape[0]:  # Check depth
                 nodule_image[cmask > 0] = scan_array[
                     np.where(cmask > 0)[0],
@@ -73,11 +74,11 @@ for scan in scans_with_annotations:
 
             # Convert the new nodule image to a SimpleITK image
             nodule_image_sitk = sitk.GetImageFromArray(nodule_image)
-            nodule_image_sitk.SetSpacing(spacing)  # Set spacing for the new image
+            nodule_image_sitk.SetSpacing(spacing)
 
             # Convert the mask to a SimpleITK image
             mask_image = sitk.GetImageFromArray(cmask.astype(np.uint8))
-            mask_image.SetSpacing(spacing)  # Set spacing for the mask image
+            mask_image.SetSpacing(spacing)
 
             # Extract radiomic features using PyRadiomics
             features = extractor.execute(nodule_image_sitk, mask_image, label=1)
@@ -111,8 +112,18 @@ for scan in scans_with_annotations:
                 'malignancy': malignancy_value
             })
 
-            # Add the features to the list
-            features_list.append(features)
+            # Add the features to the feature data
+            feature_data.append(features)
+    
+    return feature_data
+
+# Multithreaded execution
+with ThreadPoolExecutor(max_workers=8) as executor:
+    results = executor.map(process_scan, scans_with_annotations)
+
+# Collect results from all workers
+for result in results:
+    features_list.extend(result)
 
 # Create a DataFrame to store the features
 features_df = pd.DataFrame(features_list)
